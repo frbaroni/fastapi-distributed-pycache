@@ -1,6 +1,11 @@
-from typing import Callable, TypeVar, Generic
+from typing import Callable, TypeVar, Generic, List
 from datetime import datetime
 from collections import OrderedDict
+from pydantic import BaseModel
+
+class ExposeRequest(BaseModel):
+    since_dt: datetime
+    remotes: List[str]
 
 T = TypeVar('T')
 class MyCache(Generic[T]):
@@ -25,6 +30,9 @@ class MyCache(Generic[T]):
 
     def has(self, key: str):
         return key in self.data
+
+    def keys(self):
+        return self.data.keys()
 
     def get_or_calc(self, key: str, calc: Callable[[str], T]):
         if not self.has(key):
