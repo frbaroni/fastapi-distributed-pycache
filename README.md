@@ -11,5 +11,6 @@ Steps to play:
 6. Show cache.py - we use an OrderedDict to keep track of the recent added items
 7. Show distributed.py - using the recent added items, we sync between caches
 
-!(FastAPI Cache Diagram)[FastAPICache.jpg]
-!(The Walkthrough)[walk.gif]
+![FastAPI Cache Diagram](./FastAPICache.jpg?raw=true)
+
+![The Walkthrough](./walk.gif?raw=true)
