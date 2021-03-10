@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from cache import MyCache
 from distributed import MyDistributed
-from datetime import datetime
+import os
+
+my_remote_name = os.environ['MY_NAME']
 
 app = FastAPI()
 pets = MyCache()
-pets_distributed = MyDistributed(pets)
+pets_distributed = MyDistributed(pets, my_remote_name)
 
 class PetEntity(BaseModel):
     name: str
@@ -18,7 +20,7 @@ def get_index():
 
 @app.get("/pets")
 def get_pets():
-    return pets.keys()
+    return list(pets.keys())
 
 @app.post("/pet")
 def post_pet(pet: PetEntity):

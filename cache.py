@@ -1,11 +1,6 @@
-from typing import Callable, TypeVar, Generic, List
+from typing import Callable, TypeVar, Generic
 from datetime import datetime
 from collections import OrderedDict
-from pydantic import BaseModel
-
-class ExposeRequest(BaseModel):
-    since_dt: datetime
-    remotes: List[str]
 
 T = TypeVar('T')
 class MyCache(Generic[T]):
@@ -19,12 +14,15 @@ class MyCache(Generic[T]):
             "updated": now,
         }
         self.data.move_to_end(key)
+        print(f'Adding {key}')
         return self
 
     def get(self, key: str):
         if self.has(key):
             self.data.move_to_end(key)
-            return self.data[key].value
+            row = self.data[key]
+            print(row)
+            return row['value']
         else:
             raise Exception(f'key not found {key}')
 
@@ -43,7 +41,7 @@ class MyCache(Generic[T]):
     def since(self, since_dt: datetime):
         recent = []
         for (_, entry_record) in reversed(self.data.items()):
-            if entry_record.updated > since_dt:
+            if entry_record['updated'] > since_dt:
                 recent.append(entry_record)
             else:
                 break
@@ -51,4 +49,7 @@ class MyCache(Generic[T]):
 
     def sync_add(self, recent):
         for entry_record in recent:
-            self.data[entry_record.key] = entry_record
+            key = entry_record['key']
+            self.data[key] = entry_record
+            self.data.move_to_end(key)
+            print(f'Sync add item: {key}')
